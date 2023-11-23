@@ -1,0 +1,569 @@
+---
+title: "Reproducible Science"
+subtitle: "Statistics, Forensics, and the Law"
+author: "Susan Vanderplas"
+date: "October 5, 2022"
+from: markdown+emoji
+format: 
+  revealjs:
+    navigation-mode: vertical
+    self-contained: true
+    includes:
+      in_header: |
+        <style>
+        @import url('https://fonts.googleapis.com/css2?family=Handlee&family=Montserrat:ital,wght@0,400;0,500;1,400;1,500&family=Roboto:ital,wght@0,500;1,500&display=swap');
+        </style>
+    theme: [default, libs/styles.css, libs/fonts.css]
+    logo: libs/N.svg
+---
+
+# Forensic [Science]{.emph .cerulean}?
+
+## Forensic Failures
+
+::: r-stack
+![](images/ballistic-headline-adj.png){.fragment}
+
+![](images/bitemark-headline.png){.fragment .fade-up}
+
+![](images/crimelab-headline.png){.fragment .fade-up}
+
+![](images/touch-dna-headline.png){.fragment .fade-up}
+:::
+
+::: notes
+Starting in the mid-2000s, there were a huge number of scandals relating to forensic evidence. The advent of DNA testing meant that many old cases were revisited, and the evidence used to convict innocent people was shown to be flawed. Subsequent investigations showed systemic problems in forensic science, highlighted by two major national reports, which I'll talk about in a moment.
+
+More recently, even DNA evidence has become less "bulletproof" than what CSI would like you to believe. There are documented cases where someone was falsely charged with a murder, even with an airtight alibi.
+
+Today, I'm going to talk about scientific reproducibility, statistics, forensics, and the law. I'm going to start with an overview of government studies of forensics, and then talk a bit about the ways that I've been working to address some of these shortcomings.
+:::
+
+## National Academy of Science (NAS) Report {.r-fit-text}
+
+::: r-stack
+::: {.fragment .fade-in-then-out}
+::: columns
+::: {.column width="40%"}
+![](images/NAS-screenshot.png)
+:::
+
+::: {.column width="60%"}
+-   Commissioned in 2005 by the Senate to assess forensic science, make recommendations, disseminate best practices, and identify relevant scientific advancements
+
+-   Focus areas:
+
+    -   fundamentals of the scientific method in forensics,
+    -   collection and analysis of forensic data (error rates),
+    -   use of forensic evidence in criminal and civil litigation,
+
+-   Important questions:
+
+    -   Extent to which a particular forensic discipline is founded on a reliable scientific methodology
+    -   Extent to which practitioners rely on human interpretation that could be biased
+:::
+:::
+:::
+
+::: {.fragment .fade-in-then-out}
+::: columns
+::: {.column width="40%"}
+![](images/NAS-screenshot.png)
+:::
+
+::: {.column width="60%"}
+> The adversarial process relating to the admission and exclusion of scientific evidence is **not suited to the task of finding "scientific truth."** The judicial system is encumbered by, among other things, judges and lawyers who generally lack the scientific expertise necessary to comprehend and evaluate forensic evidence in an informed manner... Judicial review, by itself, will not cure the infirmities of the forensic science community.
+:::
+:::
+:::
+
+::: {.fragment .fade-in}
+::: columns
+::: {.column width="40%"}
+![](images/NAS-screenshot.png)
+:::
+
+::: {.column width="60%"}
+### Recommendations {.emph}
+
+**Create a National Institute of Forensic Science** to develop accreditation, manage federal/state/local jurisdiction differences, and develop standard reporting language.
+
+**Fund research on:**
+
+-   The validity of forensic methods
+-   Quantifiable measures of the reliability and accuracy of forensic analyses
+    -   realistic case scenarios
+    -   limits due to quality of evidence
+-   Quantifiable measures of uncertainty in the conclusions of forensic analysis
+-   Automated techniques capable of enhancing forensic technologies
+:::
+:::
+:::
+:::
+
+::: notes
+The NAS report focused on the use of science in forensics, how we know (or don't know) what error rates are for forensic methods, and how forensic evidence is used in court.
+
+Primary concerns included whether disciplines are based on reliable scientific foundations, and whether practitioner bias could affect the results of the forensic comparisons.
+
+One interesting paragraph of this report highlights the fact that the legal system is not really capable of determining scientific truth. Because the legal system in the us is adversarial, and judges are supposed to base decisions on precedent, science is at best a minor factor. In addition, judges, and lawyers, and juries lack scientific training. So any problems in forensic science can't be fixed by the judicial system itself - reform has to come from outside the judicial system as well as from inside.
+
+The NAS report suggested creating a national institute of forensic science. This institute is supposed to be separate from the department of justice, because the DOJ is pretty biased towards law enforcement, and during the DNA wars, they actually had people testifying that DNA was unreliable followed, audited by the IRS, and so on.
+
+The NAS report also recommended that the NIFS fund research on method validity - again, something that shouldn't come from the DOJ because they generally only fund things that seem likely to be positive about the validity of methods. The NAS report also highlighted the importance of error rates, considering quality of evidence, and understanding the uncertainty of the conclusions of forensic analyses. Finally, the NAS report suggested the importance of research into automated techniques capable of enhancing forensic assessments.
+
+We'll come back to these recommendations in a bit. The NAS report came out in 2009, and the forensic scandals continued, but the recommended national institute of forensic science never came to be.
+:::
+
+## President's Council of Advisors on Science and Technology (PCAST)
+
+::: aside
+The [Executive Summary](https://obamawhitehouse.archives.gov/sites/default/files/microsites/ostp/PCAST/pcast_forensic_science_report_final.pdf) is an excellent read.
+:::
+
+::: r-stack
+::: {.fragment .fade-out}
+::: columns
+::: {.column width="40%"}
+![](images/pcast-screenshot.png)
+:::
+
+::: {.column width="60%"}
+> Judges' decisions about the admissibility of scientific evidence rest solely on **legal standards**; they are exclusively the province of the courts and PCAST does not opine on them. But, these decisions require making determinations about scientific validity. It is the proper province of the **scientific community** to provide guidance concerning scientific **standards for scientific validity**
+:::
+:::
+:::
+
+::: {.fragment .fade-in-then-out}
+::: columns
+::: {.column width="40%"}
+![](images/pcast-screenshot.png)
+:::
+
+::: {.column width="60%"}
+### Requirements for Scientific Validity {.emph}
+
+-   Empirical testing by
+    -   multiple groups
+    -   under conditions appropriate to its intended use,
+    -   demonstrating that the method is **repeatable** and **reproducible** and
+    -   providing estimates of the method's accuracy
+-   **subjective** disciplines
+    -   evaluated as a "black box" in the examiner's head.
+    -   Studies: many examiners render decisions about many independent tests.
+
+Without estimates of accuracy, an examiner's decision is [scientifically meaningless]{.emph .cerulean}: it has no probative value, and considerable potential for prejudicial impact.
+:::
+:::
+:::
+
+::: {.fragment .fade-in-then-out}
+::: columns
+::: {.column width="80%" margin="auto"}
+### Evaluation of Feature-Comparison Methods {.emph}
+
+::: {style="margin-right:60px"}
++----------------------+-----------+-------------------------+---------------------------------------+------------+
+| Discipline           |           | Method                  | Validity                              | Studies    |
++======================+===========+=========================+=======================================+============+
+| :dna: DNA            |           | :test_tube:             | :white_check_mark:                    | :books:    |
++----------------------+-----------+-------------------------+---------------------------------------+------------+
+| :dna: DNA (mix)      |           | :test_tube:+:mag_right: | :question:\                           | 📖📖\      |
+|                      |           |                         | :white_check_mark: in some situations | :book:     |
++----------------------+-----------+-------------------------+---------------------------------------+------------+
+| :hand: Fingerprint   |           | :mag_right:\            | :white_check_mark: (high error rate)  | :books:    |
+|                      |           | could be :computer:     |                                       |            |
++----------------------+-----------+-------------------------+---------------------------------------+------------+
+| :gun: Firearms       |           | :mag_right:\            | :question:                            | 📖📖       |
+|                      |           | could be :computer:     |                                       |            |
++----------------------+-----------+-------------------------+---------------------------------------+------------+
+| :mans_shoe: Footwear |           | :mag_right:             | :question:                            | :question: |
++----------------------+-----------+-------------------------+---------------------------------------+------------+
+| 🦱 Hair              |           | :mag_right:             | 🚩🚩                                  | :books:    |
++----------------------+-----------+-------------------------+---------------------------------------+------------+
+| :tooth: Bitemark     |           | :mag_right:             | 🚩🚩                                  | :books:    |
++----------------------+-----------+-------------------------+---------------------------------------+------------+
+:::
+:::
+
+::: {.column width="20%"}
+::: {style="margin-left:30px"}
++---------------------------+------------------------------+
+|                           | Meaning                      |
++===========================+==============================+
+| :test_tube:               | Lab                          |
++---------------------------+------------------------------+
+| :mag_right:               | Subjective                   |
++---------------------------+------------------------------+
+| :computer:                | Algorithm                    |
++---------------------------+------------------------------+
+| :white_check_mark:        | Valid                        |
++---------------------------+------------------------------+
+| :question:                | Unknown                      |
++---------------------------+------------------------------+
+| :triangular_flag_on_post: | Invalid                      |
++---------------------------+------------------------------+
+| :books:                   | Many Studies                 |
++---------------------------+------------------------------+
+| :book:                    | Some Studies                 |
++---------------------------+------------------------------+
+:::
+:::
+:::
+:::
+
+::: {.fragment .fade-in-then-out}
+::: columns
+::: {.column width="40%"}
+![](images/pcast-screenshot.png)
+:::
+
+::: {.column width="60%"}
+### Recommendations {.emph}
+
+-   NIST should assess foundational validity annually :books:
+    -   With help from a committee of outside scientists/statisticians
+    -   Providing error rate estimates for valid disciplines
+    -   Suggesting necessary steps for validity (if not valid)
+-   Develop objective methods for DNA mixtures, firearms, and fingerprints
+:::
+:::
+:::
+
+::: {.fragment .fade-in-then-out}
+::: columns
+::: {.column width="20%"}
+![](images/pcast-screenshot.png)
+:::
+
+::: {.column width="80%"}
+### Recommendations {.emph}
+
+![](images/pcast-recommendations.png)
+:::
+:::
+:::
+:::
+
+::: notes
+While legal standards for evidence are judges' domain, the legal standards require an assessment of scientific validity, and that's the domain of scientists and statisticians.
+
+For scientific validity we need empirical testing showing that methods are repeatable (the same person gets the same conclusion), reproducible (different people get the same conclusion), and accurate (low error rate).
+
+In laboratory procedures, like DNA comparison, this can be done step-by-step. In disciplines where the comparisons are evaluated by a human using subjective criteria, we have to do black-box studies, which are a lot more work.
+
+If there aren't good estimates of accuracy, then there isn't anything the examiner really can say about their comparison. There is no benefit to that testimony in court.
+
+PCAST evaluated 6 forensic comparison methods and used a DOJ report to evaluate hair evidence.
+
+-   DNA (single source and simple mixture) - valid and reliable but not infallible in practice
+-   DNA (complex mixture) - valid under limited circumstances, but more evidence is needed
+-   Bitemark - unlikely to ever meet standards for validity
+-   Fingerprint - subjective assessment is valid, but with a substantial false positive rate
+-   Firearms - does not currently meet standards for validity (but could)
+-   Footwear - no studies showing scientific validity
+
+There were also some additional recommendations - as science changes, NIST should annually assess the validity of forensic disciplines.
+
+Where the technology exists, automatic methods should be developed - DNA mixtures, firearms, and fingerprints. This involves the use of machine learning tools, but then we can "test" large numbers of samples without human input (and the associated time and expense). We can get error rates and explain why errors occur.
+
+PCAST recommended that DOJ should not offer testimony on any method that doesn't have scientific validity, empirical studies, and known error rates. (This wasn't implemented)
+:::
+
+------------------------------------------------------------------------
+
+::: r-stretch
+> Ironically, it was the emergence and maturation of a new forensic science, DNA analysis, in the 1990s that first led to serious questioning of the validity of many of the traditional forensic disciplines... When, as a result, DNA evidence was declared inadmissible in a 1989 case in New York, scientists engaged in DNA analysis in both forensic and non-forensic applications came together to promote the development of reliable principles and methods that have enabled DNA analysis of single-source samples to become the "gold standard" of forensic science for both investigation and prosecution.\
+> \
+> - PCAST Executive Summary
+:::
+
+### Major Takeaways {.red}
+
+::: {.cerulean .emph .huge .fragment}
+Change only happens when evidence that was admissible is declared inadmissible
+:::
+
+::: {.cerulean .emph .huge .fragment}
+Scientists (forensic and not) have to be actively involved in the legal system
+:::
+
+------------------------------------------------------------------------
+
+::: r-stretch
+> A second---and more important---direction is to convert latent-print analysis from a subjective method to an objective method. The past decade has seen extraordinary advances in automated image analysis based on machine learning and other approaches---leading to dramatic improvements in such tasks as face recognition and the interpretation of medical images. This progress holds promise of making fully automated latent fingerprint analysis possible in the near future. There have already been initial steps in this direction, both in academia and industry.
+
+> The same tremendous progress over the past decade in image analysis that gives us reason to expect early achievement of fully automated latent print analysis is cause for optimism that fully automated firearms analysis may be possible in the near future. Efforts in this direction are currently hampered, however, by lack of access to realistically large and complex databases that can be used to continue development of these methods and validate initial proposals.\
+> - PCAST Executive Summary
+:::
+
+### Major Takeaways {.red}
+
+::: {.cerulean .emph .huge .fragment}
+Subjective methods can be automated with machine learning
+:::
+
+::: {.cerulean .emph .huge .fragment}
+Data gathering methods (and databases) are important resources for new method development
+:::
+
+------------------------------------------------------------------------
+
+::: r-stretch
+> In recent years, some judges have struggled to understand increasingly complex scientific evidence...
+
+> For example, prosecutors and defense attorneys might benefit from a focus on the interpretation of and requirements for evidence; and judges may benefit from information on evaluating the scientific rigor of expert testimony and the reliability of forensic evidence.
+
+> ...juries have been described as least comfortable and competent with regard to statistical evidence... Jurors' use and comprehension of forensic evidence is not well studied.\
+> - NAS Report pg 234-237
+:::
+
+### Major Takeaways {.red}
+
+::: {.cerulean .emph .huge .fragment}
+Scientific and statistical literacy is important for lawyers, judges, and juries
+:::
+
+# My Research
+
+::: notes
+So now that we've identified the problems in forensic science and statistics, here's how my research fits into that. As you can tell, it's a big, tangled mess of problems, and so I'm hoping this framework will help tie the different projects I'm involved in together a bit.
+:::
+
+## Algorithms and Statistical Learning
+
+### Footwear Evidence
+
+::: notes
+As you may recall from the table earlier, in footwear evidence there's so little scientific study out there that it's hard to know where to start. There's literally no quantitative analysis of feature frequency in the population, and while there are computational models for some things like accidental damage, they're not to the point of being used in practice, at least in the US.
+
+So, in footwear, we're building this from the ground up. I decided to start with the large unsolved problem - 95% of shoe comparisons practitioners deal with use only "class characteristics" - things that don't uniquely identify a shoe, like make, model, size, and tread pattern.
+
+These characteristics only matter if you can quantify how likely they are to occur by chance, and to do that we need data. So in this project, I'm working with an engineer to design data collection instruments, and then we'll work out things like how much data you need for stable estimates, how weather and location and time affect estimates, and so on. There's all sorts of statistical questions here, but to be able to answer any of them we have to start laying a foundation for data collection.
+
+Once we have data, we need a way to automatically detect features of interest. For this we use neural networks, and we *want* to be able to pass in a picture and get out boxes with labeled features, as well as e.g. dimensions of the shoe sole and other information.
+
+In preliminary models, we started with basic pictures and features and discovered that this labeling process wasn't as easy as we initially thought. Can anyone spot the circle in the adidas logo?
+
+Examiners actually weren't bothered by this problem - they implicitly understand the issues that arise from context or lack thereof. But it's an interesting issue, right - how do you calculate an error rate under these circumstances, when human-labeled data is incomplete?
+:::
+
+::: r-stack
+::: {.fragment .fade-out}
+-   No current basis for making quantitative assessments of footwear frequency in the population
+
+-   95% of footwear comparisons use make/model/tread pattern features\
+    **class characteristics** are shared by multiple items and are not **individually identifiable**
+
+-   Goal: Develop a way to collect data about footwear/tread patterns
+
+    -   Equipment
+    -   Statistical analysis method
+:::
+
+::: {.fragment .fade-in-then-out .center}
+![](images/2021-June-1.png){fig-align="center"}
+:::
+
+::: {.fragment .fade-in-then-out}
+![](images/Shoe-Model-Goal.png)
+:::
+
+::: {.fragment .fade-in-then-out}
+![](images/adidas_circle_pred_correct.png)
+:::
+:::
+
+## Algorithms and Statistical Learning
+
+### Bullet and Cartridge Case Analysis
+
+::: notes
+I'm also involved in developing algorithms for bullet and cartridge case analysis.
+
+This research is much closer to deployment in a lab setting. We have algorithms which take bullet scans and do some automatic feature recognition.
+
+When combined with some feature engineering to match features examiners say they look for, we can fit a random forest that takes two bullet scans and predicts whether or not they came from the same weapon.
+
+We've developed visualizations to summarize this process for test sets that are like those examiners use. These visualizations are paired with shiny apps that allow users to "drill down" and see how the algorithm arrived at the conclusion it did. Many times, this process allows us to diagnose situations where the model didn't behave as expected - so it's useful for debugging, and also for knowing when not to trust the algorithm's results.
+:::
+
+::: large
+-   Develop algorithms for matching bullets and cartridge cases
+
+-   Compare these algorithms to examiner performance\
+    Informally, the bullet algorithms are *much* better -- publications are in preparation
+
+-   Algorithms must be explainable
+
+    -   Visual diagnostics to see how things "went wrong" if errors are made
+    -   Examiners (and eventually, juries) must conceptually understand how the decision was made
+:::
+
+::: r-stack
+::: {.fragment .fade-in-then-out .center}
+![](images/Bullets_Aligned_comparison_horiz.png){width="60%" fig-align="center"}
+:::
+
+::: {.fragment .fade-in-then-out}
+![](images/signature-aligned.png){width="80%"}
+:::
+
+::: {.fragment .fade-in-then-out}
+![](images/hou-1.png){width="80%"}
+:::
+:::
+
+## Algorithms and Statistical Learning
+
+::: {.large .center}
+-   Develop a community of forensics open-source software developers
+
+-   Encourage publication of source code **and data**
+
+-   Develop validation sets that can be used to compare algorithm performance
+
+    -   Including performance of closed-source/proprietary algorithms
+
+-   Resources for connecting lawyers with experts
+
+    -   prosecution has all the resources, defense usually doesn't have the time and money
+:::
+
+::: notes
+Another area I'm working on as part of the development of algorithms for forensics is to develop a community of forensics open-source software developers.
+
+Forensics has a habit of producing closed-source, proprietary algorithms - there's lots of money to be made! But these algorithms mean that someone who was convicted based on the results for an algorithm may not be able to understand the basis for their conviction.
+
+That's a very big problem for a fair and transparent justice system. So one of the ways that I'm working in this space is to advocate for open-source software and open data, because both open software and data are essential for transparency within the justice system.
+
+Another area I'm starting to branch out into is to try to help lawyers and other experts connect with developers. This is important because the prosecution is usually working with crime labs and others who can afford software licenses and who have the evidence. The defense usually doesn't have those resources - they may be able to access the evidence, but they may not be able to afford to pay for an independent analysis, and they usually can't handle digging through source code. So it's important to also build up some resources to ensure that both sides of the system have access to good science and scientists, training, and statistical expertise.
+:::
+
+## Assessing Error Rates
+
+::: r-stack
+::: {.fragment .fade-in-then-out .large}
++------------------+:------------------:+:------------------:+:------------------:+
+|                  |                    | Examiner Decisions |                    |
++------------------+--------------------+--------------------+--------------------+
+| Reality          | Identification\    | Inconclusive       | Elimination\       |
+|                  | (match)            |                    | (no match)         |
++------------------+--------------------+--------------------+--------------------+
+| Same Source      | :white_check_mark: | :raised_eyebrow:   | :x:                |
++------------------+--------------------+--------------------+--------------------+
+| Different Source | :x:                | :raised_eyebrow:   | :white_check_mark: |
++------------------+--------------------+--------------------+--------------------+
+:::
+
+::: {.fragment .fade-in-then-out .center}
+![](images/shape-overview-1.png){width="80%"}
+:::
+
+::: {.fragment .fade-in-then-out}
+![](images/shape-overview-study-crop.png)
+:::
+
+::: {.fragment .fade-in-then-out}
+![](images/ci-inconclusive.png)
+:::
+:::
+
+::: notes
+-   In most classification problems, the number of real-world outcomes and the number of labels are similar
+
+-   Not so much in firearms. Firearms examiners are allowed to "not decide" by saying a comparison is inconclusive. This isn't *necessarily* a problem, but when we looked into the studies which are used to establish error rates, we found a problem in how inconclusives are used in practice.
+
+-   Ideally, we'd want errors that are equally likely no matter whether two items are from the same source or different sources, as shown in this diagram. Inconclusives would be less common than correct identifications, but potentially more common than errors, and they'd be equally likely for same and different source comparisons. This would indicate that examiners are sometimes not able to make strong conclusions, but when they're "on the fence" about whether there is enough evidence in any one direction, they are equally likely to make an inconclusive decision.
+
+-   When we look at studies that had errors, what we find is that there are real discrepancies in the inconclusives.
+
+-   When examiners make an inconclusive decision, they're generally much less likely to do so when presented with same-source evidence. What this means in practice is that they're more willing to take a chance on making an identification for same-source evidence than they are to take a chance and eliminate different source evidence. This is a fundamental bias -- but one that isn't nearly as strong when the study examiners were mostly trained in the EU or use EU rating scales.
+
+-   Some studies were designed so poorly that we couldn't even estimate any error rates other than the rate of false positives, and the design of these studies was such that even that rate was artificially low.
+:::
+
+## Legal Briefs and Testimony
+
+-   Firearms error rate studies have several common, systematic flaws:
+
+    -   Conducted on volunteers
+    -   No effort made to ensure a representative sample of examiners
+    -   Large drop-out rates (\>33%) w/ no attempt to adjust error rate estimates
+    -   Examiners know they're being tested, which changes how they answer (Hawthorne effect)
+
+-   Calculated error rates count "inconclusive/don't know" answers as correct
+
+-   Repeatability and reproducibility aren't well studied
+
+-   Data from studies aren't available to other researchers on request
+
+### Cases
+
+-   Illinois v. Winfield (2022)
+-   US v. Sutton (2018)
+-   Maryland v. Abruquah (2022)
+-   New Jersey v. Olenowski (2022)
+
+### Goal: Push for objective, algorithmic assessment of evidence {.red}
+
+## Scientific Communication: Juries
+
+-   If we were to use firearms algorithms in court, how would that affect juries?
+
+-   Can we use graphics and statistical visualizations to help juries understand?
+
+$$\left(\begin{array}{c}\text{Identification}\\\text{Inconclusive}\\\text{Elimination}\end{array}\right)\times\left(\begin{array}{c}\text{Algorithm}\\\text{Status quo}\end{array}\right)\times\left(\begin{array}{c}\text{Pictures + Text}\\\text{Only Text}\end{array}\right)$$
+
+::: {.emph .cerulean .large}
+Preliminary results
+:::
+
+-   Inconclusive scenarios significantly reduce participants perception of the reliability of firearms examination and of how scientific the field is.
+
+-   Including the algorithm testimony decreases participants assessment of how well they understood the testimony and participants' opinions of examiner reliability.
+
+## Conclusion
+
+::: {.large}
++-------------------------------------------------------------------------------------+-----------------------------------------------+
+| Takeaway                                                                            | Project                                       |
++=====================================================================================+===============================================+
+| Data gathering methods/databases are important resources for new method development | Shoe scanner + Automatic Feature ID           |
++-------------------------------------------------------------------------------------+-----------------------------------------------+
+| Subjective methods can be automated with machine learning                           | Bullet Algorithm development                  |
++-------------------------------------------------------------------------------------+-----------------------------------------------+
+| Scientific and statistical literacy is important                                    | Jury Perception of Bullet Algorithm Testimony |
++-------------------------------------------------------------------------------------+-----------------------------------------------+
+| Change only happens when evidence is declared inadmissible                          | Legal Briefs/Testimony +\                     |
+|                                                                                     | Bullet Algorithm development                  |
++-------------------------------------------------------------------------------------+-----------------------------------------------+
+| Scientists have to be actively involved in the legal system                         | Legal Briefs/Testimony                        |
++-------------------------------------------------------------------------------------+-----------------------------------------------+
+:::
+
+## Acknowledgements
+
+::: columns
+::: {.column width="50%"}
+### Collaborators
+
+-   Heike Hofmann
+-   Alicia Carriquiry
+-   Kori Khan
+
+### Students
+
+-   Rachel Rogers
+-   Muxin Ha
+-   Joe Zemmels
+-   Jayden Stack
+-   Miranda Tilton
+:::
+
+::: {.column width="50%"}
+This work was funded (or partially funded) by the Center for Statistics and Applications in Forensic Evidence (CSAFE) through Cooperative Agreements 70NANB15H176 and 70NANB20H019 between NIST and Iowa State University, which includes activities carried out at Carnegie Mellon University, Duke University, University of California Irvine, University of Virginia, West Virginia University, University of Pennsylvania, Swarthmore College and University of Nebraska, Lincoln.
+
+![](images/CSAFE%20Logo.svg)
+:::
+:::

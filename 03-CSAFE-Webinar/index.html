@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Automatic Acquisition of Footwear Class Characteristics</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Susan Vanderplas &amp; Richard Stone" />
+    <meta name="date" content="2022-03-24" />
+    <script src="libs/header-attrs-2.11/header-attrs.js"></script>
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <meta name="github-repo" content="srvanderplas/Presentations"/>
+    <meta name="twitter:title" content="Automatic Acquisition of Footwear Class Characteristics"/>
+    <meta name="twitter:description" content="Shoe Scanning hardware and approach Presented at CSAFE Webinar"/>
+    <meta name="twitter:url" content="https://srvanderplas.github.io/Presentations/2022-CSAFE-Webinar/"/>
+    <meta name="twitter:image" content="https://srvanderplas.github.io/Presentations/2022-CSAFE-Webinar/social-card.png"/>
+    <meta name="twitter:image:alt" content="Automatic Acquisition of Footwear Class Characteristics Shoe Scanning hardware and approach Presented as a CSAFE Webinar by Susan Vanderplas &amp; Richard Stone"/>
+    <meta name="twitter:card" content="summary_large_image"/>
+    <meta name="twitter:creator" content="@srvanderplas"/>
+    <meta name="twitter:site" content="@srvanderplas"/>
+    <meta property="og:title" content="Automatic Acquisition of Footwear Class Characteristics"/>
+    <meta property="og:description" content="Shoe Scanning hardware and approach Presented at CSAFE Webinar"/>
+    <meta property="og:url" content="https://srvanderplas.github.io/Presentations/2022-CSAFE-Webinar/"/>
+    <meta property="og:image" content="https://srvanderplas.github.io/Presentations/2022-CSAFE-Webinar/social-card.png"/>
+    <meta property="og:image:alt" content="Automatic Acquisition of Footwear Class Characteristics Shoe Scanning hardware and approach Presented as a CSAFE Webinar by Susan Vanderplas &amp; Richard Stone"/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:locale" content="en_US"/>
+    <meta property="article:author" content="Susan Vanderplas"/>
+    <script src="libs/clipboard-2.0.6/clipboard.min.js"></script>
+    <link href="libs/shareon-1.4.1/shareon.min.css" rel="stylesheet" />
+    <script src="libs/shareon-1.4.1/shareon.min.js"></script>
+    <link href="libs/xaringanExtra-shareagain-0.2.6/shareagain.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-shareagain-0.2.6/shareagain.js"></script>
+    <link rel="stylesheet" href="css/csafe.css" type="text/css" />
+    <link rel="stylesheet" href="css/csafe-fonts.css" type="text/css" />
+    <link rel="stylesheet" href="css/this-presentation.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Automatic Acquisition of Footwear Class Characteristics
+### Susan Vanderplas &amp; Richard Stone
+### March 24, 2022
+
+---
+
+
+
+
+
+
+
+
+class: inverse-blue, center, middle
+# Introduction
+
+---
+class: primary-blue
+## Random Match Probability
+&lt;img src="images/crime_scene_90.jpg" height = "200px" style = "position: absolute; left:30px; top: 250px;"/&gt;&lt;img src="images/suspect_90.png" height = "200px" style="position: absolute; right:30px; top:250px;"/&gt;
+
+
+???
+
+After a crime is committed, investigators must reconcile the evidence found at the scene with a narrative of the crime. For instance, shoeprints at the scene might be linked to shoes in the suspect's possession, which would suggest the suspect's shoes were at the scene. During this process, the shoes are examined and the two prints are compared. In court, the prosecution must then describe the value of that evidence - how much information should it provide to the jury concerning the suspect's guilt or innocence?
+
+Part of the calculation of that information is to determine what the probability of a coincidental match is, that is, what's the probability that some random individual would also have a shoe with a tread pattern similar to the print at the crime scene? If that probability is high, the evidence is less valuable, but if it's low, then the jury should treat the evidence with much more weight.
+
+---
+class:primary-blue
+## What is the probability of&lt;br&gt;a coincidental match?
+
+1. Define the comparison population
+
+2. Sample from the comparison population    
+`\(N\)` total shoes
+
+3. Identify similar shoes from the comparison population    
+`\(S\)` similar shoes in the `\(N\)` shoe sample
+
+4. Estimate the probability of a coincidental match: `$$\hat{p} = \frac{S}{N}$$`
+
+???
+
+Probability would tell us that this is a fairly simple calculation. 
+We first define the comparison population, that is, the population of people who could have made the print - say, individuals in Lincoln.  
+Then, we would sample from that comparison population to see what shoes the people in the comparison set have.
+We would then identify similar shoes - shoes which could have made the print at the crime scene, and estimate the probability of a coincidental match as the number of similar shoes divided by the size of the comparison population sample. 
+
+--
+&lt;br/&gt;
+
+&gt; .large[Quantifying the frequency of shoes in a local population is an unsolveable problem]&lt;br/&gt; - Leslie Hammer, [Hammer Forensics](https://hammerforensics.com/), March 2018
+
+
+???
+
+This problem has been called "unsolveable" for good reasons - it wasn't tractable with the technology available at the time. But occasionally, you can imagine a solution that depends on a certain technology being invented... and that's where we are today. So why didn't it seem possible?
+
+
+---
+class:primary-blue
+## Obstacles: Characterizing Comparison Populations
+
+- No 100% complete database of all shoes 
+    - manufacturer, model, size, tread style, manufacturing molds
+    
+- Shoe purchases vs. frequency of wear (temperature, weather dependence)
+
+- Local populations may differ wildly .small[(Benedict, et al., 2014)]
+
+&lt;br/&gt;&lt;br/&gt;
+.center[&lt;img src = "images/snow-boots.jpg" width = "50%" style = "vertical-align:middle;float:middle"/&gt;]
+&lt;!-- https://pixnio.com/free-images/2017/05/03/2017-05-03-07-35-18-900x456.jpg --&gt;
+
+???
+
+For starters, while there are databases for other pattern match evidence, like tire tread patterns, there is not a complete database of all shoes sold in the US. Tires have to be certified; shoes do not. There are also many more manufacturers for shoes, new models are released all the time. A single model may have multiple tread patterns, a single tread pattern may be used on multiple shoe models. The tread pattern may change depending on the style of shoe; there are also different molds for a single size/tread combination, and these molds may have different characteristics. 
+
+You may think about instead tracking sales data - surely, we could get a database of shoe preferences that way? How many of you have shoes in your closet that you've never worn? That you've worn once? Or less than once a year? Purchase data doesn't provide a realistic picture of the shoes people wear day to day - most of us have one or two "favorites". In addition, that provides us no information about how the match probability changes with season and weather. Obviously, most people aren't wearing sandals in the middle of winter, but there aren't any studies of footwear frequency to back that up with data.
+
+In addition, we know that local populations differ wildly in footwear choices. The footwear worn on campus might not be all that similar to the footwear worn near the capitol building, because the populations that frequent them are different and the dress codes are different. This is another problem with sales data - it doesn't generalize well to the hyper-local regions that we might want to consider when characterizing coincidental match probability.
+
+So how do we solve this problem? How do we collect this data at a (potentially) neighborhood level?
+
+---
+class:inverse-green
+
+# Scanner Design
+
+.center[![](images/2021-June-1.png)]
+
+---
+class:primary-green
+
+## Capturing Photos While People Walk on the System
+
+- .large.emph[**Timing**]: How to capture the shoes when they are in place
+    - magnetic sensors triggered when the screen is depressed begin the process of capturing images
+
+- .large.emph[**Angles**]: How to see the sole and the sides
+    - External mirrors enable one of the cameras in our system to see the side of the shoes regardless of the position on the system
+    - Another camera is angled to see the entirety of at least one of the soles throughout the process
+
+- .large.emph[**Repetition**]: How to ensure the system can capture images repeatedly
+    - High-tension springs return the surface to level once subjects
+
+
+---
+class:primary-green
+
+## Preserving Privacy
+
+- .large.emph[**Screens**]: Cameras have blinders that restrict field of view to avoid areas with sensitive content
+
+- .large.emph[**Positioning**]: System is deployed in areas approved by the Institutional Review Board (IRB) and Iowa State
+
+- .large.emph[**Angles**]: Cameras and mirrors are angled to maximize field of view without violating the law
+
+![](images/privacy-mockup.png)
+
+---
+class:primary-green
+
+## Overcoming Glare &amp; Lighting Issues
+
+- .large.emph[**Anti-Glare**]: Electronics and internal structure caused glare
+    - Internal workings covered with an anti-glare screen to restrict the level of reflected light
+
+- .large.emph[**Dim Light**]: In low exterior light situations, shoe visibility decreased
+    - Light strips generate light within the system, illuminating both the sole and the side
+    
+
+---
+class:primary-green
+
+## Equipment Security
+
+- .large.emph[**Weatherproofing**]: 
+    - Overhangs, braces, and a weather-sealed loop keep water out
+    - An internal heater prevents the surface from icing over
+
+- .large.emph[**Theft**]: 
+    - The machine is over 150 lbs and `\(2' \times 2.5'\)`
+    - Can be sunk into the ground with minimal clearance and locked brackets
+
+- .large.emph[**Other Threats**]:
+    - Partial Faraday cage protects against EM interference
+    - Solid steel enclosure protects from impact
+
+---
+class:primary-green
+
+## Present System
+
+.pull-left[
+- Large, "Theft-proof" version
+
+- Magnet sensors with remote hub control cameras
+
+- Shelled system for element protection
+
+- Finely-tuned springs for proper compression
+
+- Anti-glare screens in use
+
+- Technology placed in an "inner core"
+]
+.pull-right[
+.center[
+![](images/2021-June-1.png)
+]
+]
+
+
+---
+class:primary-green
+
+## Next System
+
+.pull-left[
+- Significantly more portable design    
+(approximately half the size)
+
+- One box used with a moisture wicking system to protect against elements
+
+- Interior specially designed to reduce or negate glare
+
+- Some systems built into structure
+
+- Castable for mass production
+
+- Tamper-proof system wipe
+].pull-right[
+![](images/next-top.png)
+
+![](images/next-side.png)
+]
+
+
+---
+class:primary-green
+
+## Potential Future Iterations
+
+.pull-left[
+- Hydraulic system for camera instigation
+
+- All systems built into box without need for removal
+
+- GPS location services
+
+- Weight tracking
+
+- Fully remote access
+
+- Multiple designs to merge into given environment
+].pull-right[
+![](images/ISU-Map.png)
+]
+
+
+---
+class:primary-red
+
+# Analysis
+
+- Automatically identify features on the shoe sole using computer vision
+
+![](images/Shoe-Model-Goal.png)
+
+???
+
+It's cool to be able to get the data out of the scanner, but we know that examiners don't have time to mark up all of those images manually, so we're working on being able to generate images like this automatically.
+
+Note: This image is a simulation of what we're hoping to get out of a picture from the scanner. We're slowly making progress on this, but there are also other database systems like those used in the UK for cataloguing shoe features automatically. 
+
+We're hoping to get some idea of the external shoe sole size (calculated using the known distance from the surface of the scanner to the camera), as well as logo recognition where such information is visible, and feature identification maps of the tread pattern. Obviously, this will depend both on the image quality/lighting and the wear of the shoes, but it is something we want to make available and easy to use for examiners, ideally hosting the identification software so that you can access it externally using a web browser. 
+
+We're hoping to give a webinar talking about this in about a year's time, so for now you're going to be left with this teaser image. Keep an eye on CSAFE's webinar schedule, though!
+
+---
+class:inverse-blue
+
+## Collaborate with us!
+
+.large.center[**Susan Vanderplas: susan.vanderplas@unl.edu**]
+
+.large.center[**Richard Stone: rstone@iastate.edu**]
+
+&lt;br/&gt;&lt;br/&gt;
+
+#### Our Footwear-Related Technologies
+
+- Bio-Walker: A robotic system that will walk like a human over any terrestrial surface.
+
+- Multisystem tread scanner: hardware driven network of scanners 
+
+- Smart system upgrade (ability to detect shoes that are being worn by different individuals)
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

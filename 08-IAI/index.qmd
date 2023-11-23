@@ -1,0 +1,526 @@
+---
+title: "Local Population Footwear Class Characteristics"
+subtitle: "An End-to-End Pipeline for Automatic Data Acquisition and Analysis"
+author: "Susan Vanderplas & Rick Stone"
+format: 
+  revealjs:
+    self-contained: true
+---
+
+```{r load_refs}
+#| echo: false
+#| cache: false
+#| include: false
+library(RefManageR)
+BibOptions(check.entries = FALSE, 
+           bib.style = "numeric", 
+           cite.style = 'authoryear', 
+           style = "html",
+           hyperlink = FALSE, 
+           no.print.fields = c("isbn", "urldate"),
+           dashed = FALSE)
+
+bb <- ReadBib("./refs.bib", check = T)
+```
+
+
+## Discussion
+
+How are you currently using footwear forensics?
+
+# Use of Footwear Evidence
+
+## Some reasons we've heard
+
+- Few individuals trained\
+
+  ::: {.smaller}
+    - Collection of footwear impression evidence is difficult
+    
+    - First responders often damage evidence at the scene
+    
+    - Equipment for collecting prints is difficult to use and expensive
+    
+    - Insufficient detail in prints for RAC analysis
+    
+    - Insufficient people to perform RAC analysis
+  :::
+    
+- Not as useful in court as other types of evidence
+
+
+How do we make footwear evidence more useful?
+
+::: notes
+
+These reasons are all things we've heard from footwear examiners and practitioners. Granted, all of these opinions are very US-centric - footwear evidence is more widely used in e.g. the UK and Israel.
+:::
+
+## Random Match Probability
+
+:::: {.columns}
+::: {.column width="30%"}
+![](images/crime_scene_90.jpg){height="200px"}
+:::
+::: {.column width="70%"}
+![](images/suspect_90.png){height="200px"}
+
+:::
+::::
+
+
+::: {.notes}
+After a crime is committed, investigators must reconcile the evidence found at the scene with a narrative of the crime. For instance, shoeprints at the scene might be linked to shoes in the suspect's possession, which would suggest the suspect's shoes were at the scene. During this process, the shoes are examined and the two prints are compared. In court, the prosecution must then describe the value of that evidence - how much information should it provide to the jury concerning the suspect's guilt or innocence?
+
+Part of the calculation of that information is to determine what the probability of a coincidental match is, that is, what's the probability that some random individual would also have a shoe with a tread pattern similar to the print at the crime scene? If that probability is high, the evidence is less valuable, but if it's low, then the jury should treat the evidence with much more weight.
+:::
+
+## What is the probability of a coincidental match?
+
+1. Define the comparison population
+
+2. Sample from the comparison population    
+$N$ total shoes
+
+3. Identify similar shoes from the comparison population    
+$S$ similar shoes in the $N$ shoe sample
+
+4. Estimate the probability of a coincidental match: $$\hat{p} = \frac{S}{N}$$
+
+
+::: {.notes}
+Probability would tell us that this is a fairly simple calculation. 
+We first define the comparison population, that is, the population of people who could have made the print - say, individuals in Omaha.  
+Then, we would sample from that comparison population to see what shoes the people in the comparison set have.
+We would then identify similar shoes - shoes which could have made the print at the crime scene, and estimate the probability of a coincidental match as the number of similar shoes divided by the size of the comparison population sample. 
+:::
+
+--
+
+> Quantifying the frequency of shoes in a local population is an unsolveable problem - Leslie Hammer, [Hammer Forensics](https://hammerforensics.com/), March 2018
+
+
+::: {.notes}
+
+This problem has been called "unsolveable" for good reasons - it wasn't tractable with the technology available at the time. But occasionally, you can imagine a solution that depends on a certain technology being invented... and that's where we are today. So why didn't it seem possible?
+:::
+
+## Obstacles: Characterizing Comparison Populations {.r-fit-text}
+
+:::: {.columns}
+
+::: {.column width="70%"}
+- No 100% complete database of all shoes 
+    - manufacturer, model, size, tread style, manufacturing molds
+    
+- Shoe purchases vs. frequency of wear (temperature, weather dependence)
+
+- Local populations may differ wildly `r Citep(bb, "benedict_geographical_2014", .opts = list(max.names = 1, longnamesfirst = F))`
+
+- New tread patterns appear frequently
+:::
+
+::: {.column width="30%"}
+![](images/snow-boots.jpg)
+<!-- https://pixnio.com/free-images/2017/05/03/2017-05-03-07-35-18-900x456.jpg -->
+:::
+
+::::
+
+::: {.notes}
+
+For starters, while there are databases for other pattern match evidence, like tire tread patterns, there is not a complete database of all shoes sold in the US. Tires have to be certified; shoes do not. There are also many more manufacturers for shoes, new models are released all the time. A single model may have multiple tread patterns, a single tread pattern may be used on multiple shoe models. The tread pattern may change depending on the style of shoe; there are also different molds for a single size/tread combination, and these molds may have different characteristics. 
+
+You may think about instead tracking sales data - surely, we could get a database of shoe preferences that way? How many of you have shoes in your closet that you've never worn? That you've worn once? Or less than once a year? Purchase data doesn't provide a realistic picture of the shoes people wear day to day - most of us have one or two "favorites". In addition, that provides us no information about how the match probability changes with season and weather. Obviously, most people aren't wearing sandals in the middle of winter, but there aren't any studies of footwear frequency to back that up with data.
+
+In addition, we know that local populations differ wildly in footwear choices. The footwear worn on campus might not be all that similar to the footwear worn near the capitol building, because the populations that frequent them are different and the dress codes are different. This is another problem with sales data - it doesn't generalize well to the hyper-local regions that we might want to consider when characterizing coincidental match probability.
+
+So how do we solve this problem? How do we collect this data at a (potentially) neighborhood level?
+
+:::
+
+
+## Relevant Features
+:::: {.columns}
+::: {.column width="60%"}
+
+- Make, Model, Tread pattern, Size, Type of shoe
+
+- Cannot be used to identify an individual match
+
+- Used for exclusion
+
+:::
+::: {.column width="40%"}
+![](images/converse-combined.png)
+:::
+::::
+
+::: {.notes}
+
+In forensics, class characteristics are broad descriptors shared by many different individual objects. In shoes, class characteristics refer to make, model, tread pattern, size, type of shoe, and even wear patterns. Examiners will say that a suspect's shoe "is consistent with" prints left at the scene, but if the match is made on class characteristics alone (95% of the time), they cannot explicitly connect the shoe and the print at the crime scene.
+
+Randomly acquired characteristics, which occur due to random damage as the shoe is worn or during the manufacturing process, can be used to make an individualized match.
+
+We've already discussed why make and model are difficult to work with - there's no indexed data set to use. Similarly, shoe size isn't as related to tread size as you'd expect, so that's off the list too. Working with tread pattern seems like a better option. 
+
+:::
+
+## Relevant Features { .r-fit-text}
+
+Features other than make/model and size:
+
+- Knockoffs often have very similar tread patterns
+- Similar styles have similar tread patterns across brands
+- Unknown shoes can still be classified and assessed
+
+::: {.smaller}
+| Dr. Martens | Eastland | Timberland |
+| --- | --- | --- |
+| ![](images/dr-martens-work-2295-rigger-tan-greenland_product_114677_color_201711.jpg) | ![](images/eastland-1955-edition-jett-brown_product_8946957_color_6.jpg) | ![](images/timberland-6-premium-boot-coal-waterbuck_product_8906913_color_761877.jpg) |
+| Work 2295 Rigger | 1955 Edition Jett | 6" Premium Boot |
+:::
+
+::: {.notes}
+
+If we work off of features within the shoe tread, we get some additional benefits. 
+
+First, similar tread patterns are found in shoes of similar style - knockoffs specifically try to emulate a tread pattern, but even across well known brands, shoes that serve a similar function often have similar tread patterns - here are 3 different models of work boots, from different manufacturers, each with the same tread pattern. The number of design elements may differ slightly, but that variation happens even within shoe make and model - different sizes have different tread elements in some cases. These shoes would all leave a similar print, so working with the entire set of shoes with these features makes more sense than specifically identifying the make and model.
+
+An additional benefit is that unknown shoes can still be classified and addressed. If we define our feature set as "Shoes with quadrilaterals around the edge that have triangle cutouts, and diamond-shaped plus signs in the middle", we can start off by estimating the probability that a shoe like these 3 exists, and then can increase the specificity of the query from there as data quality and amount allows. It's definitely not a perfect solution, but crime scene prints are typically degraded, so this is a level of detail that matches the practical problem fairly well. It's an abstraction, but at a level that makes sense both statistically and pragmatically. 
+
+:::
+
+# Automatic Shoe Data Acquisition
+
+## Design Philosophy
+
+## Requirements (Outdoor)
+
+
+## Requirements (Indoor)
+
+
+
+## Tech Specs
+
+
+# Scanner Demonstration
+
+
+# Automatic Feature Identification
+
+## Automatic Feature ID Goals
+:::: {.columns}
+
+::: {.column width="80%"}
+
+- ID geometric features in outsole images
+
+- Robust 
+    - lighting conditions
+    - rotation
+    - image quality
+    - tread colors
+
+- Fast processing of new images
+
+- Identify features using human-friendly terms
+:::
+
+::: {.column width="20%"}
+![](images/adidas-gamecourt-footwear-white-shock-cyan-matte-silver_product_9152357_color_788789.jpg)
+![](images/adidas-gamecourt-multicourt-collegiate-navy-footwear-white-hi-res-yellow_product_9152340_color_787413.jpg)
+![](images/adidas-gamecourt-light-granite-footwear-white-grey-three-f17_product_9152357_color_788803.jpg)
+![](images/adidas-gamecourt-multicourt-footwear-white-footwear-white-shock-red_product_9152356_color_784656.jpg)
+:::
+::::
+
+::: {.notes}
+
+The detection method should be able to handle different lighting conditions, rotation and image quality - if we plan to use this method on real-world images, we have to be able to handle degraded image quality. Even working with images of shoe soles found online used for marketing purposes, there's a huge variation in image quality and lighting.
+
+In addition, we need new images to be processed quickly. It's tolerable if the algorithm takes a while to train, but the production model needs to be able to process new data efficiently. 
+
+Finally, we need to be able to explain what this algorithm is doing to practitioners, which means that the features that are identified should be explainable and fairly consistent with how humans would label things.
+
+:::
+
+## Statistical Importance
+
+- Assemble a database of shoe images
+
+    - from local populations
+    - with identified features
+
+- Calculate random match probability
+
+- Provide more weight to class characteristic comparisons
+
+    - eventually, probabilistic comparisons?
+
+:::
+![](images/shoe-dna.png)
+
+
+## Computer Vision
+
+![Source: [Everything You Ever Wanted to Know About Computer Vision](https://towardsdatascience.com/everything-you-ever-wanted-to-know-about-computer-vision-heres-a-look-why-it-s-so-awesome-e8a58dfb641e) by Ilija Mihajlovic](images/yolo.gif)
+
+::: {.notes}
+
+Computer vision has gotten exponentially better in the past decade, to the point where real-time models can now support things like self-driving cars, recognizing obstacles like people and animals and applying the brakes automatically. 
+
+We want to leverage this type of algorithm for our purposes - run images from the scanner through an algorithm that will automatically label the class characteristics. Then we can use that information to make sense of the data in the database we're building with images taken from the scanner.
+
+To do this, we have to start with a set of features we want to identify, and "teach" the model how to "see" the features in the images.
+:::
+
+
+## Baby's First Feature Set
+<table class="featuretable">
+<thead><tr><th style = "width:33%"> Bowtie </th><th style = "width:33%"> Chevron </th><th style = "width:33%"> Circle </th></tr></thead>
+<tr><td><img src="images/bowtie_examples.png" alt = "Bowtie examples"/></td><td><img src="images/chevron_examples.png" alt = "Chevron examples"/></td><td><img src="images/circle_examples.png" alt = "Circle examples"/></td></tr>
+<tr><th> Line </th><th> Polygon </th><th> Quadrilateral </th></tr>
+<tr><td><img src="images/line_examples.png" alt = "Line examples"/></td><td><img src="images/polygon_examples.png" alt = "Polygon examples"/></td><td><img src="images/quad_examples.png" alt = "Quadrilateral examples"/></td></tr>
+<tr><th> Star </th><th> Text </th><th> Triangle </th></tr>
+<tr><td><img src="images/star_examples.png" alt = "Star examples"/></td><td><img src="images/text_examples.png" alt = "Text examples"/></td><td><img src="images/triangle_examples.png" alt = "Triangle examples"/></td></tr>
+</table>
+
+Used to separate shoes by make/model in (small) local samples `r Citep(bb, 'gross_variability_2013', .opts = list(max.names = 1, longnamesfirst = F))`
+
+::: {.notes}
+
+There is some precedent for separating shoes in this way - Gross et al (2013) used a similar system with a different set of features, and managed to separate a local sample of shoes into make/model piles using this classification scheme. 
+
+Some of these categories include interesting variations: bowties, for example, are defined as roughly quadrilateral, but with two opposite concave features; thus, butterflies have been included in the bowtie category.  Polygons, Quadrilaterals, and Triangles are allowed to have rounded corners; not all rubber materials handle sharp corners well. Polygons include anything with more than 4 sides - as of now, pentagons, hexagons, and octagons. Circles include ovals and ellipses as well. 
+
+:::
+
+## Labeling the Data
+
+![Screenshot from LabelStudio demonstrating the labeling process.](images/LabelStudio.png)
+
+::: {.notes}
+We've labeled features like the feature set in the previous slide, but we've also dabbled a bit in labeling brand names, shoe sizes (on the sole), and some other feature sets. The process is fairly tedious, but we have hired undergraduates to do the work, and it's not a bad job for them - they can watch netflix or listen to podcasts while labeling images for us.
+:::
+
+
+## Model Training
+
+::::{.columns}
+:::{.column width="60%"}
+- Provide images and labels to the algorithm
+
+- Algorithm tries to reduce mismatch b/w algorithms and labels    
+(**loss function**)
+
+- End result is an algorithm which takes new images and outputs matching labels (with a corresponding probability)
+:::
+
+:::{.column width="40%"}
+![Babies work similarly, but are a lot cuter (and a lot more needy)](images/zoey-2.jpg)
+:::
+::::
+
+
+## Classification vs. Detection
+
+:::: {.columns}
+::: {.column width="47%"}
+
+**Classification** assigns an image to one or more of a fixed set of categories
+
+![Is this a rabbit or a deer?](https://upload.wikimedia.org/wikipedia/commons/9/9e/Unlucky_Jackalope_4891624513.jpg){width="80%"}
+
+:::
+::: {.column width="6%"}
+:::
+::: {.column width="47%"}
+**Detection** identifies the location of objects in an image and assigns a label
+
+![All dogs are identified and have bounding boxes.](images/dogs.png)
+:::
+
+::::
+
+## Results
+
+:::: {.columns}
+:::{.column width="40%"}
+When **classifying** images, we get fairly good results, though some classes are confused.
+:::
+
+:::{.column width="60%"}
+
+![](images/ConfMatrix-1.png)
+:::
+::::
+
+
+## Definitions
+![Classes get confusing](images/dc_circle_quad_confusion.png)
+
+Blue: Prediction matches image label
+
+Grey: Prediction does not match image label
+
+![Not everything is labeled correctly](images/adidas_circle_pred_correct.png)
+
+
+::: {.notes}
+
+We created a shiny application to see the images and the model's predictions. Blue means that the image had that label, grey means it does not. I've selected two images that show both correct and incorrect model classifications. 
+
+In the first image, the design is labeled as a quadrilateral and the model identifies that, but also identifies image as containing a circle very strongly. When we look at the image, the confusion is understandable. One half of the shape is angular, the other is rounded, so the shape has features of both a quadrilateral and a circle. We've decided to label these images as both (owing to the ambiguity), but that means we have to correct all of the previously labeled images. We're working on that. 
+
+In the second image, the model predicts circles, quadrilaterals, and text, but the image is labeled as having quadrilaterals and text. The circles happen to be part of the text (and the letters aren't even Os), and our brains pick up on the text but ignore the circles because we perceive things wholistically; the model does not. We're also in the process of updating these labels, because again, the data is not correct; the model absolutely is. 
+
+We're trying to ensure that the data used to train the model is of very high quality, while not spending millions of dollars to hire workers online to label things. Because we determined the guidelines for labeling the data, labeled the data (or oversaw the labeling), and trained the model ourselves, we have the advantage of knowing the flaws at every point in the process; that means we have the responsibility to fix those flaws where possible. 
+
+We're not doing inference on the model results at this point (nor planning to use the data we're training the model with during the operational stage) so the data -> model -> fix data loop is less of a validity concern. 
+
+When the model is sufficiently well-calibrated, we can then work with engineers to build the device, collect some initial data, and tweak the model weights with new data that better represents what we'll actually see from the collection equipment. By that point, hopefully we'll also have narrowed down the geometric classification scheme so that categories that are now somewhat fuzzy are more clearly operationalized.
+
+:::
+
+## What does the model see?
+
+:::: {.r-stack}
+::: {.fragment}
+![unscaled heatmapp - DC](images/heatmap-quad-4-dc-pure-se-navy_product_7270757_color_9.png)
+Yellow = high activation
+
+Blue: Prediction matches image label 
+
+Grey: Prediction does not match image label
+:::
+::: {.fragment}
+![unscaled heatmapp - DC](images/heatmap-test_image.png)
+Yellow = high activation
+
+Blue: Prediction matches image label 
+
+Grey: Prediction does not match image label
+:::
+::: {.fragment}
+![unscaled heatmapp - DC](images/heatmap-text-2-seychelles-slow-down-blush-metallic_product_9017725_color_34700.png)
+Yellow = high activation
+
+Blue: Prediction matches image label 
+
+Grey: Prediction does not match image label
+:::
+
+::::
+
+::: {.notes}
+
+Class activation maps use the gradient with respect to each class label, back propagated to the last convolutional layer to maintain spatial information. Here, we can see that the D shape discussed previously is activating both circle and quad; the round part is activating the circle class and the straight part is activating the quad class. I've included only the relevant classes plus one comparison heatmap from a class that wasn't activated to cut down on the amount of clutter here, but heatmaps can be generated for each category.
+:::
+
+
+# Class Characteristic Labeling Activity
+
+---
+
+![](demo/5-11-tactical-a-t-a-c-8-coyote-coyote_product_8851777_color_293417.jpg)
+
+---
+
+![](demo/adidas-kids-nemeziz-messi-18-3-fg-soccer-little-kid-big-kid-white-black-blue_product_9044767_color_8209.jpg)
+
+---
+
+![](demo/adidas-running-alphabounce-beyond-maroon-maroon-mystery-ruby_product_8984129_color_726231.jpg)
+
+
+---
+
+![](demo/allrounder-by-mephisto-nigata-tex-black-rubber-new-petrol-suede-n_product_8568166_color_706278.jpg)
+
+
+---
+
+![](demo/ariat-callahan-cattleguard-tan-mulberry_product_8918883_color_704554.jpg)
+
+
+---
+
+![](demo/bogs-crandall-tall-black-multi_product_8722026_color_80.jpg)
+
+
+---
+
+![](demo/brooks-adrenaline-gts-18-navy-teal-mint_product_8967115_color_718121.jpg)
+
+---
+
+![](demo/caterpillar-casual-delancy-rose_product_8979017_color_603.jpg)
+
+
+---
+
+![](demo/columbia-kids-newton-ridge-waterproof-wide-little-kid-big-kid-cordovan-golden-yellow_product_9116672_color_662093.jpg)
+
+
+---
+
+![](demo/columbia-kids-powderbug-forty-print-toddler-little-kid-big-kid-madder-brown-golden-nugget_product_8907979_color_756631.jpg)
+
+---
+
+![](demo/columbia-newton-ridge-plus-ii-waterproof-mud-sanguine_product_8701716_color_347800.jpg)
+
+---
+
+![](demo/crocs-classic-venture-pack-clog-white-latigo-bay_product_9447194_color_886774_Bottom_2020-11-17 06_00_02.jpg)
+
+---
+
+![](demo/dansko-xp-2-0-black-waterproof_product_9069753_color_53224.jpg)
+
+
+---
+
+![](demo/dc-kids-pure-high-top-wnt-ev-little-kid-big-kid-wheat_product_9076331_color_716.jpg)
+
+
+---
+
+![](demo/ecco-soft-7-tred-mid-navajo-brown-moon-rock_product_9094181_color_345618.jpg)
+
+---
+
+![](demo/el-naturalista-nido-n787-caldera_product_8965768_color_24838.png)
+
+---
+
+![](demo/gentle-souls-by-kenneth-cole-rory-black-suede_product_9079938_color_106.jpg)
+
+---
+
+![](demo/jambu-dory-denim-blue_product_9005544_color_1513.jpg)
+
+
+---
+
+![](demo/adidas-copa-18-3-fg-solar-red-black-solar-yellow_product_8970719_color_560971.jpg)
+
+
+# Questions
+
+# Discussion
+
+- Collaborate with us!
+
+- Collect population level data
+
+- Data sharing
+
+- Other uses for the scanner or software?
+
+
+Susan Vanderplas: susan.vanderplas@unl.edu 
+
+Rick Stone: rstone@iastate.edu
